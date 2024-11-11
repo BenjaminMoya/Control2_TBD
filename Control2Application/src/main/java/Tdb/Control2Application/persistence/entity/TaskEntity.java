@@ -1,11 +1,11 @@
-package Tdb.Control2Application.models;
+package Tdb.Control2Application.persistence.entity;
 
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
-public class TaskModel {
+public class TaskEntity {
 
     private Long taskId;
     private Long taskUserId;

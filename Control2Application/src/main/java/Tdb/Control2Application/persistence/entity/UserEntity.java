@@ -1,8 +1,8 @@
-package Tdb.Control2Application.models;
+package Tdb.Control2Application.persistence.entity;
 import lombok.Data;
 
 @Data
-public class UserModel {
+public class UserEntity {
 
     private Long userId;
     private String userName;
