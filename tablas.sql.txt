@@ -1,0 +1,17 @@
+CREATE TABLE users (
+    user_id BIGSERIAL PRIMARY KEY,
+    user_name VARCHAR(50) NOT NULL,
+    user_password VARCHAR(255) NOT NULL,  -- almacenar encriptada en el backend
+    user_email VARCHAR(100) UNIQUE NOT NULL,
+    is_auth BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE tasks (
+    task_id BIGSERIAL PRIMARY KEY,
+    task_user_id BIGINT NOT NULL,
+    task_title VARCHAR(100) NOT NULL,
+    task_desc TEXT,
+    task_end_date DATE,
+    is_completed BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (task_user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
