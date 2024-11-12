@@ -47,4 +47,34 @@ public class TaskRepositoryImplementation implements TaskRepository{
                     .executeAndFetchFirst(TaskEntity.class);
         }
     }
+
+    //Estos metodos modifican los atributos en la base de datos, se les pasa el objeto TaskEntity y el nuevo valor
+    @Override
+    public void modifyTaskTitle(TaskEntity task, String taskTitle) {
+        try(org.sql2o.Connection con = sql2o.open()){
+            con.createQuery("UPDATE tasks SET task_title=:task_title WHERE task_id=:task_id")
+                    .addParameter("task_title",taskTitle)
+                    .addParameter("task_id",task.getTaskId())
+                    .executeUpdate();
+        }
+    }
+
+    @Override
+    public void modifyTaskDesc(TaskEntity task, String taskDesc) {
+        try(org.sql2o.Connection con = sql2o.open()){
+            con.createQuery("UPDATE tasks SET task_desc=:task_desc WHERE task_id=:task_id")
+                    .addParameter("task_desc",taskDesc)
+                    .addParameter("task_id",task.getTaskId())
+                    .executeUpdate();
+        }
+    }
+    @Override
+    public void modifyTaskExpireDate(TaskEntity task, String taskEndDate) {
+        try(org.sql2o.Connection con = sql2o.open()){
+            con.createQuery("UPDATE tasks SET task_end_date=:task_end_date WHERE task_id=:task_id")
+                    .addParameter("task_end_date",taskEndDate)
+                    .addParameter("task_id",task.getTaskId())
+                    .executeUpdate();
+        }
+    }
 }
