@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Sql2o;
 
+import java.util.List;
+
 @Repository
 public class TaskRepositoryImplementation implements TaskRepository{
 
@@ -33,7 +35,7 @@ public class TaskRepositoryImplementation implements TaskRepository{
     @Override
     public TaskEntity getById(Long taskId) {
         try(org.sql2o.Connection con = sql2o.open()){
-            return con.createQuery("SELECT * FROM view_task WHERE taskId=:task_id")
+            return con.createQuery("SELECT * FROM tasks WHERE taskId=:task_id")
                     .addParameter("task_id",taskId)
                     .executeAndFetchFirst(TaskEntity.class);
         }
@@ -42,7 +44,7 @@ public class TaskRepositoryImplementation implements TaskRepository{
     @Override
     public TaskEntity getByUserId(Long taskUserId) {
         try(org.sql2o.Connection con = sql2o.open()){
-            return con.createQuery("SELECT * FROM view_task WHERE taskUserId=:task_user_id")
+            return con.createQuery("SELECT * FROM tasks WHERE taskUserId=:task_user_id")
                     .addParameter("task_user_id",taskUserId)
                     .executeAndFetchFirst(TaskEntity.class);
         }
@@ -77,4 +79,52 @@ public class TaskRepositoryImplementation implements TaskRepository{
                     .executeUpdate();
         }
     }
+
+    @Override
+    public void handleIsCompleted(TaskEntity task) {
+        try(org.sql2o.Connection con = sql2o.open()){
+            con.createQuery("UPDATE tasks SET is_completed=:is_completed WHERE task_id=:taskId")
+                    .addParameter("is_completed",!task.isCompleted())
+                    .executeUpdate();
+        }
+    }
+
+    @Override
+    public boolean deleteTask(Long taskId){
+        String sql = "DELETE FROM tasks WHERE task_id = :taskId";
+
+        try (org.sql2o.Connection con = sql2o.open()) {
+            int result = con.createQuery(sql)
+                    .addParameter("task_id", taskId)
+                    .executeUpdate()
+                    .getResult();
+
+            return result > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public List<TaskEntity> getCompletedTask(Long userId){
+        String sql = "SELECT * FROM tasks WHERE task_user_id = :userId AND is_completed = true";
+
+        try (org.sql2o.Connection con = sql2o.open()) {
+            return con.createQuery(sql)
+                    .addParameter("userId", userId)
+                    .executeAndFetch(TaskEntity.class);
+        }
+    }
+    @Override
+    public List<TaskEntity> getUncompletedTask(Long userId){
+        String sql = "SELECT * FROM tasks WHERE task_user_id = :userId AND is_completed = false";
+
+        try (org.sql2o.Connection con = sql2o.open()) {
+            return con.createQuery(sql)
+                    .addParameter("userId", userId)
+                    .executeAndFetch(TaskEntity.class);
+        }
+    }
+
 }

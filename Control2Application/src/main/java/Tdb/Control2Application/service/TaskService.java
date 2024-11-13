@@ -15,11 +15,10 @@ public class TaskService {
         return taskRepository.addTask(task);
     }
 
-    public TaskEntity getTaskById(Long id){
-        return taskRepository.getById(id);
-    }
+    public TaskEntity getTaskById(Long id){ return taskRepository.getById(id); }
 
     public TaskEntity getTaskByUserId(Long userId){
         return taskRepository.getByUserId(userId);
     }
+
 }
