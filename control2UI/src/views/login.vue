@@ -2,7 +2,7 @@
     <main>
         <div class="container main">
             <div class="content">
-                <img class="image-login" src="./media/logo.png">
+                <img class="image-login">
                 <div class="header" v-if="!register">Inicio de sesion</div>
                 <div class="header" v-else>Registrarse</div> <!--Si el usuario escoge la opcion de registrarse, se mostrara el titulo "Registrarse"-->
                 <div class="headerDescription" v-if="!register">Completar campos para iniciar sesion</div>
@@ -21,7 +21,7 @@
                 </div>
                 <div class="alsoButtons"> 
                     <div class="alsoButton" @click="handleChanger" v-if="!register">Registrarse</div>
-                    <div class="alsoButton" @click="handleChanger" v-else>Iniciar sesion</div> //Manejador de opciones para cambiar entre iniciar sesion y registrarse
+                    <div class="alsoButton" @click="handleChanger" v-else>Iniciar sesion</div> <!--Manejador de opciones para cambiar entre iniciar sesion y registrarse-->
                     <router-link to="/">
                         <div class="alsoButton" @click="handleChanger" v-if="register">Ingreso anonimo</div>
                     </router-link>

@@ -1,7 +1,7 @@
 <template>
 
     <footer class="footer1">
-            <p>&copy; 2024 Portal de arriendo.Todos los derechos reservados</p>
+            <p>&copy; 2024 Portal de gestion de tareas</p>
             <p><a href="#contact" data-bs-toggle="modal" data-bs-target="#contactModal">Contactanos</a> para mas informacion</p>
                 <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
