@@ -33,7 +33,7 @@ public class UserRepositoryImplementation implements UserRepository{
     @Override
     public UserEntity getById(Long userId) {
         try(org.sql2o.Connection con = sql2o.open()){
-            return con.createQuery("SELECT * FROM view_user WHERE userId=:user_id")
+            return con.createQuery("SELECT * FROM user WHERE userId=:user_id")
                     .addParameter("user_id",userId)
                     .executeAndFetchFirst(UserEntity.class);
         }
@@ -42,7 +42,7 @@ public class UserRepositoryImplementation implements UserRepository{
     @Override
     public UserEntity getByEmail(String userEmail) {
         try(org.sql2o.Connection con = sql2o.open()){
-            return con.createQuery("SELECT * FROM view_user WHERE userEmail=:user_email")
+            return con.createQuery("SELECT * FROM user WHERE userEmail=:user_email")
                     .addParameter("user_email",userEmail)
                     .executeAndFetchFirst(UserEntity.class);
         }
