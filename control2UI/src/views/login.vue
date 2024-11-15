@@ -150,7 +150,35 @@ export default{
         async addUser(){//Registro de usuario
 
             if(this.useremailRegister != '' && this.passwordRegisterConfirmation != '' && this.passwordRegister != '' && this.nameRegister != ''){
+
+                // Verificar que las contraseñas ingresadas coincidan
                 if(this.passwordRegister == this.passwordRegisterConfirmation){
+
+                    // Verificar formato de email con expresión regular para evitar inserción de datos SQL
+                    const emailFormat = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                    
+                    if (!emailFormat.test(this.useremailRegister)) {
+                        alert("Formato de email inválido");
+                    }
+
+                    // Verificar formato de nombre de usuario con expresión regular para evitar inserción de datos SQL
+                    // Se permiten letras, números y guiones. Longitud entre 3 y 25 carácteres
+                    const usernameFormat = /^[a-zA-Z0-9-_]{3,25}$/;
+
+                    if (!usernameFormat.test(this.nameRegister)) {
+                        alert("Formato de nombre inválido");
+                        return;
+                    }
+
+                    // Al menos una letra minúscula, al menos una mayúscula, al menos un número, al menos un carácter especial @$!%*?&
+                    // Mínimo 8 carácteres
+                    const passwordFormat = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+                    if(!passwordFormat.test(this.passwordRegister)) {
+                        alert("Formato inválido, ingrese 8 carácteres como mínimo y que se cumpla: al menos una mayúscula, al menos un número, al menos un carácter especial @$!%*?&")
+                        return;
+                    }
+                    
 
                     const new_user = {
 
