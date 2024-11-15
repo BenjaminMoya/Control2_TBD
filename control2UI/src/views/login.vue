@@ -22,7 +22,7 @@
                 <div class="alsoButtons"> 
                     <div class="alsoButton" @click="handleChanger" v-if="!register">Registrarse</div>
                     <div class="alsoButton" @click="handleChanger" v-else>Iniciar sesion</div> <!--Manejador de opciones para cambiar entre iniciar sesion y registrarse-->
-                    <router-link to="/">
+                    <router-link to="/home">
                         <div class="alsoButton" @click="handleChanger" v-if="register">Ingreso anonimo</div>
                     </router-link>
                     <div class="alsoButton" data-bs-toggle="modal" data-bs-target="#contactModal" v-if="!register">Recuperar contraseña</div> <!--Boton para recuperar contraseña-->
