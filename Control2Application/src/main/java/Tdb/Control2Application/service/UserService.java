@@ -28,6 +28,6 @@ public class UserService {
 
     public boolean login (String email, String password){
         UserEntity user = getUserByEmail(email);
-        return user != null && Objects.equals(password, user.getUserPassword());
+        return user != null && Objects.equals(password, user.getUserpassword());
     }
 }
