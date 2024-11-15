@@ -15,3 +15,30 @@ CREATE TABLE tasks (
     is_completed BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (task_user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+
+-- Insertar usuarios en la tabla users
+INSERT INTO users (user_name, user_password, user_email, is_auth) VALUES
+('Sofía', '1234', 'sofia@example.com', TRUE),
+('Martín', '1234', 'martin@example.com', TRUE),
+('Javier', '1234', 'javier@example.com', FALSE);
+
+-- Insertar tareas en la tabla tasks
+
+-- Para Sofía (user_id = 1)
+INSERT INTO tasks (task_user_id, task_title, task_desc, task_end_date, is_completed) VALUES
+(1, 'Tarea 1 para Sofía', 'Descripción de la primera tarea de Sofía', '2024-11-20', FALSE),
+(1, 'Tarea 2 para Sofía', 'Descripción de la segunda tarea de Sofía', '2024-11-25', TRUE),
+(1, 'Tarea 3 para Sofía', 'Descripción de la tercera tarea de Sofía', '2024-12-01', FALSE);
+
+-- Para Martín (user_id = 2)
+INSERT INTO tasks (task_user_id, task_title, task_desc, task_end_date, is_completed) VALUES
+(2, 'Tarea 1 para Martín', 'Descripción de la primera tarea de Martín', '2024-11-22', TRUE),
+(2, 'Tarea 2 para Martín', 'Descripción de la segunda tarea de Martín', '2024-11-27', FALSE),
+(2, 'Tarea 3 para Martín', 'Descripción de la tercera tarea de Martín', '2024-12-05', TRUE);
+
+-- Para Javier (user_id = 3)
+INSERT INTO tasks (task_user_id, task_title, task_desc, task_end_date, is_completed) VALUES
+(3, 'Tarea 1 para Javier', 'Descripción de la primera tarea de Javier', '2024-11-23', FALSE),
+(3, 'Tarea 2 para Javier', 'Descripción de la segunda tarea de Javier', '2024-11-28', FALSE),
+(3, 'Tarea 3 para Javier', 'Descripción de la tercera tarea de Javier', '2024-12-06', TRUE);
+
