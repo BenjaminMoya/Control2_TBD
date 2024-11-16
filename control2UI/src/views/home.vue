@@ -20,6 +20,11 @@
                       </div>
               </div>
               <div class="button-container1" v-if="!isLogged"> 
+                  <router-link to = "/create">
+                      <div type="button" class="btn btn-secondary">
+                          <i class="fi fi-rr-user"></i>Crear tarea
+                      </div>
+                  </router-link>
                   <router-link to = "/login">
                       <div type="button" class="btn btn-secondary">
                           <i class="fi fi-rr-user"></i>Ingreso

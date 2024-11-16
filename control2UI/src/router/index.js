@@ -16,6 +16,12 @@ const router = createRouter({
             component: () => import('../views/home.vue'),
             alias: '/inicio',
         },
+        {
+            path: '/create',
+            name: 'create',
+            component: () => import('../views/createTask.vue'),
+            alias: '/crear',
+        },
         
         
     ],
