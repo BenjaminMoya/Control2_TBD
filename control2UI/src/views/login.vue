@@ -1,214 +1,196 @@
 <template>
     <main>
-        <div class="container main">
-            <div class="content">
-                <img class="image-login">
-                <div class="header" v-if="!register">Inicio de sesion</div>
-                <div class="header" v-else>Registrarse</div> <!--Si el usuario escoge la opcion de registrarse, se mostrara el titulo "Registrarse"-->
-                <div class="headerDescription" v-if="!register">Completar campos para iniciar sesion</div>
-                <div class="headerDescription" v-else>Completar campos para registro</div><!--De igual manera se mostrara un texto diferente dependiendo de la opcion escogida-->
-                <div class="inputContainer" v-if="!register">
-                    <input type="email" v-model="usermail" placeholder="Ingrese correo">
-                    <input type="password" v-model="password" placeholder="Ingrese contraseña">
-                    <button class="sessionButton" @click="login">Iniciar sesion</button>
-                </div>
-                <div class="inputContainer" v-else><!--Si el usuario escoge la opcion de registrarse, se mostrara un formulario para el registro de usuario sino sera el de inicio de sesion-->
-                    <input type="text" v-model="nameRegister" placeholder="Ingrese su nombre">
-                    <input type="email" v-model="useremailRegister" placeholder="Ingrese correo">
-                    <input type="password" v-model="passwordRegister" placeholder="Ingrese contraseña">
-                    <input type="password" v-model="passwordRegisterConfirmation" placeholder="Repita contraseña">
-                    <button class="sessionButton" @click="addUser">Registrar</button>
-                </div>
-                <div class="alsoButtons"> 
-                    <div class="alsoButton" @click="handleChanger" v-if="!register">Registrarse</div>
-                    <div class="alsoButton" @click="handleChanger" v-else>Iniciar sesion</div> <!--Manejador de opciones para cambiar entre iniciar sesion y registrarse-->
-                    <router-link to="/home">
-                        <div class="alsoButton" @click="handleChanger" v-if="register">Ingreso anonimo</div>
-                    </router-link>
-                    <div class="alsoButton" data-bs-toggle="modal" data-bs-target="#contactModal" v-if="!register">Recuperar contraseña</div> <!--Boton para recuperar contraseña-->
-                    <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="contactModalLabel">Recuperacion de contraseña</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="contactForm">
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label">Nombre</label>
-                                        <input type="text" class="form-control" id="name" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="email" class="form-label">Correo Electrónico</label>
-                                        <input type="email" class="form-control" id="email" required>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
-                            <button type="submit" class="btn btn-primary" onclick="submitForm()">Enviar</button>
-                        </div>
-                    </div>
-                    </div>
-                    </div>
-                </div>
+      <div class="container main">
+        <div class="content">
+          <img class="image-login" />
+          <div class="header" v-if="!register">Inicio de sesion</div>
+          <div class="header" v-else>Registrarse</div>
+          <!-- Si el usuario escoge registrarse, se cambia el título -->
+          <div class="headerDescription" v-if="!register">Completar campos para iniciar sesion</div>
+          <div class="headerDescription" v-else>Completar campos para registro</div>
+          <!-- Formulario de inicio de sesión -->
+          <div class="inputContainer" v-if="!register">
+            <input type="email" v-model="usermail" placeholder="Ingrese correo" />
+            <input type="password" v-model="password" placeholder="Ingrese contraseña" />
+            <button class="sessionButton" @click="login">Iniciar sesion</button>
+          </div>
+          <!-- Formulario de registro -->
+          <div class="inputContainer" v-else>
+            <input type="text" v-model="nameRegister" placeholder="Ingrese su nombre" />
+            <input type="email" v-model="useremailRegister" placeholder="Ingrese correo" />
+            <input type="password" v-model="passwordRegister" placeholder="Ingrese contraseña" />
+            <input
+              type="password"
+              v-model="passwordRegisterConfirmation"
+              placeholder="Repita contraseña"
+            />
+            <button class="sessionButton" @click="addUser">Registrar</button>
+          </div>
+  
+          <div class="alsoButtons">
+            <!-- Botón para cambiar entre Inicio de sesión y Registro -->
+            <div class="alsoButton" @click="toggleRegister" v-if="!register">Registrarse</div>
+            <div class="alsoButton" @click="toggleRegister" v-else>Iniciar sesion</div>
+            <router-link to="/home">
+              <div class="alsoButton" v-if="register">Ingreso anonimo</div>
+            </router-link>
+            <!-- Recuperar contraseña -->
+            <div
+              class="alsoButton"
+              data-bs-toggle="modal"
+              data-bs-target="#contactModal"
+              v-if="!register"
+            >
+              Recuperar contraseña
             </div>
+            <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="contactModalLabel">Recuperacion de contraseña</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="contactForm">
+                      <div class="mb-3">
+                        <label for="name" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="name" required />
+                      </div>
+                      <div class="mb-3">
+                        <label for="email" class="form-label">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="email" required />
+                      </div>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary" onclick="submitForm()">Enviar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </main>
-</template>
-
-<script> 
-//Importaciones para la logica de la vista
-import axios from 'axios'
-import mainComponent from '../components/mainComponent.vue'
-import { userState } from "../components/userState"; // Importa el estado global del usuario
-
-function redirectUser(){//Funcion para redirigir al usuario a la pagina principal
-
-    window.location.href = '/';
-}
-
-
-
-export default{
-
-    components: {//Componente principal de la vista
-        mainComponent
+  </template>
+  
+  <script>
+  import axios from "axios";
+  import mainComponent from "../components/mainComponent.vue";
+  import { userState } from "../components/userState"; // Estado global del usuario
+  
+  export default {
+    components: {
+      mainComponent,
     },
-    data(){
-
-        return{//Variables de la vista
-
-            usermail: '',
-            password: '',
-            register: false,
-            nameRegister: '',
-            useremailRegister: '',
-            passwordRegister: '',
-            passwordRegisterConfirmation: '',
-            userLogged:null,
-
-        }
+    data() {
+      return {
+        usermail: "",
+        password: "",
+        register: false, // Estado para alternar entre formularios
+        nameRegister: "",
+        useremailRegister: "",
+        passwordRegister: "",
+        passwordRegisterConfirmation: "",
+        userLogged: null,
+      };
     },
-
-    methods:{//Metodos de la vista
-
-        async login() {
-            const params = new URLSearchParams();
-            params.append("email", this.usermail); // Ajusta el nombre del parámetro según lo que espera el backend
-            params.append("password", this.password);
-
+    methods: {
+      async login() {
+        const params = new URLSearchParams();
+        params.append("email", this.usermail);
+        params.append("password", this.password);
+  
+        try {
+          const respuesta = await axios.post(
+            import.meta.env.VITE_BASE_URL + "api/user/login",
+            params
+          );
+  
+          if (respuesta.data) {
             try {
-                const respuesta = await axios.post(
-                    import.meta.env.VITE_BASE_URL + "api/user/login",
-                    params
-                );
-
-                if (respuesta.data) {
-                    try {
-                        localStorage
-                        // Búsqueda del usuario logueado
-                        const userResponse = await axios.get(
-                    import.meta.env.VITE_BASE_URL + `api/user/getemail/${this.usermail}`
-                );
-                //cambiar isLogged a true 
-                sessionStorage.setItem('isLogged', true);
-
-                const user = userResponse.data;
-
-                // Guardar el usuario en el estado global
-                userState.setUser(user);
-
-                        this.userLogged = userState.getUser(); // Opcional: Usar localmente
-
-                        console.log("Usuario logueado:", this.userLogged);
-                    } catch (error) {
-                        console.error("Error en axios: Búsqueda del usuario", error.response ? error.response.data : error.message);
-                    }
-
-                    // Redirigir al usuario después del login
-                    window.location.href = "/home";
-                } else {
-                    alert("Credenciales inválidas");
-                }
+              const userResponse = await axios.get(
+                import.meta.env.VITE_BASE_URL + `api/user/getemail/${this.usermail}`
+              );
+              sessionStorage.setItem("isLogged", true);
+              sessionStorage.setItem("userLogged", JSON.stringify(userResponse.data));
+              userState.setUser(userResponse.data);
+              this.userLogged = userState.getUser();
+              console.log("Usuario logueado:", this.userLogged);
             } catch (error) {
-                console.error("Error en axios: Login", error.response ? error.response.data : error.message);
+              console.error("Error en axios: Búsqueda del usuario", error.response?.data || error.message);
             }
+  
+            window.location.href = "/home";
+          } else {
+            alert("Credenciales inválidas");
+          }
+        } catch (error) {
+          console.error("Error en axios: Login", error.response?.data || error.message);
         }
-    }
-,
-        handleChanger(){//Manejador de opciones para cambiar entre iniciar sesion y registrarse
-
-            this.register = !this.register;
-            console.log(this.register);
-        },
-        anon(){//Inicio de sesion anonimo
-
-            this.name= "anon";
-            redirectUser();
-
-        },
-        async addUser(){//Registro de usuario
-
-            if(this.useremailRegister != '' && this.passwordRegisterConfirmation != '' && this.passwordRegister != '' && this.nameRegister != ''){
-                // Verificar que las contraseñas ingresadas coincidan
-                if(this.passwordRegister == this.passwordRegisterConfirmation){
-
-                    // Verificar formato de email con expresión regular para evitar inserción de datos SQL
-                    const emailFormat = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-                    
-                    if (!emailFormat.test(this.useremailRegister)) {
-                        alert("Formato de email inválido");
-                    }
-                    // Verificar formato de nombre de usuario con expresión regular para evitar inserción de datos SQL
-                    // Se permiten letras, números y guiones. Longitud entre 3 y 25 carácteres
-                    const usernameFormat = /^[a-zA-Z0-9-_]{3,25}$/;
-                    if (!usernameFormat.test(this.nameRegister)) {
-                        alert("Formato de nombre inválido");
-                        return;
-                    }
-                    // Al menos una letra minúscula, al menos una mayúscula, al menos un número, al menos un carácter especial @$!%*?&
-                    // Mínimo 8 carácteres
-                    const passwordFormat = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-                    if(!passwordFormat.test(this.passwordRegister)) {
-                        alert("Formato inválido, ingrese 8 carácteres como mínimo y que se cumpla: al menos una mayúscula, al menos un número, al menos un carácter especial @$!%*?&")
-                        return;
-                    }
-
-                    const new_user = {
-
-                        "username":this.nameRegister,
-                        "useremail":this.useremailRegister,
-                        "userpassword":this.passwordRegister,
-                        
-                    };
-                    try{
-
-                        const registro = await axios.post(import.meta.env.VITE_BASE_URL + "api/user/register",new_user); 
-                        console.log(registro);
-                        alert("Usuario creado con exito");
-
-                    } catch(error){
-
-                        alert("El usuario no se pudo registrar");
-                    }
-                } else {
-
-                    alert("Las contraseñas no coinciden");
-                }
-            } else {
-
-                alert("Rellene todos los campos para registrarse");
+      },
+      async addUser() {
+        if (
+          this.useremailRegister !== "" &&
+          this.passwordRegisterConfirmation !== "" &&
+          this.passwordRegister !== "" &&
+          this.nameRegister !== ""
+        ) {
+          if (this.passwordRegister === this.passwordRegisterConfirmation) {
+            const emailFormat = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailFormat.test(this.useremailRegister)) {
+              alert("Formato de email inválido");
+              return;
             }
-        },
-    }
-
-</script>
-
-<style scoped>
-.main{
-
+  
+            const usernameFormat = /^[a-zA-Z0-9-_]{3,25}$/;
+            if (!usernameFormat.test(this.nameRegister)) {
+              alert("Formato de nombre inválido");
+              return;
+            }
+  
+            const passwordFormat = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            if (!passwordFormat.test(this.passwordRegister)) {
+              alert(
+                "Formato inválido, ingrese 8 carácteres como mínimo con al menos una mayúscula, un número, y un carácter especial @$!%*?&"
+              );
+              return;
+            }
+  
+            const new_user = {
+              username: this.nameRegister,
+              useremail: this.useremailRegister,
+              userpassword: this.passwordRegister,
+            };
+  
+            try {
+              const registro = await axios.post(
+                import.meta.env.VITE_BASE_URL + "api/user/register",
+                new_user
+              );
+              console.log(registro);
+              alert("Usuario creado con éxito");
+            } catch (error) {
+              alert("El usuario no se pudo registrar");
+            }
+          } else {
+            alert("Las contraseñas no coinciden");
+          }
+        } else {
+          alert("Rellene todos los campos para registrarse");
+        }
+      },
+      toggleRegister() {
+        this.register = !this.register;
+        console.log("Cambiando entre formularios: Estado actual de register:", this.register);
+      },
+    },
+  };
+  </script>
+  
+  <style scoped>
+  .main {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -216,12 +198,9 @@ export default{
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    height: auto; /* Ajusta la altura según el contenido */
     min-height: 100vh;
-    
-}
-.sessionButton{
-
+  }
+  .sessionButton {
     height: 30px;
     background-color: #6d997a;
     color: #f5f5f5;
@@ -232,119 +211,78 @@ export default{
     cursor: pointer;
     transition: background-color 0.2s;
     margin-bottom: 10px;
-}
-
-.sessionButton:hover{
+  }
+  .sessionButton:hover {
     background-color: #42282c;
     transition: background-color 0.2s;
-
-}
-.image{
-
+  }
+  .image {
     height: 150px;
-}
-
-.content{
-
+  }
+  .content {
     box-sizing: border-box;
     padding: 10px;
     background-color: #f8f6f6f3;
     display: flex;
     flex-direction: column;
     align-items: center;
-
     min-width: 300px;
     max-width: 500px;
-    width: 100%;
-    margin: 0px 10px 0px 10px;
     min-height: 500px;
     max-height: 550px;
-    height: 100%;
-
     border-radius: 10px;
-}
-
-.header{
+  }
+  .header {
     text-align: center;
-    line-height: 1;
     font-size: 40px;
-    font-weight: 500 !important;
+    font-weight: 500;
     color: black;
-}
-
-.headerDescription{
-
+  }
+  .headerDescription {
     font-size: 16px;
     margin-bottom: 20px;
     color: black;
-}
-
-.inputContainer{
+  }
+  .inputContainer {
     display: flex;
-    gap: 1px;
-    width: 100%;
-    max-width: 400px;
     flex-direction: column;
-
-}
-
-.input{
-
+    gap: 10px;
+  }
+  .input {
     height: 50px;
-    box-sizing: border-box;
-
-    padding: 10px !important;
+    padding: 10px;
     font-size: 16px;
     border-radius: 4px;
-    outline: none;
     border: #cdcdcd solid 3px;
+    outline: none;
     transition: border 0.2s;
-}
-.input:hover{
+  }
+  .input:hover {
     border: #bbbbbb solid 3px;
-    transition: border 0.2s;
-
-}
-.input:focus{
+  }
+  .input:focus {
     border: #888888 solid 3px;
-    transition: border 0.2s;
-}
-
-.alsoButton{
-    
+  }
+  .alsoButton {
     text-align: center;
     cursor: pointer;
     font-weight: 500;
-    transition: all 0.2s;
     color: black;
-
-}
-
-.alsoButton:hover{
-
+    transition: all 0.2s;
+  }
+  .alsoButton:hover {
     text-decoration: underline;
-    transition: all 0.2s;
-}
-.modal-title{
-
+  }
+  .modal-title {
     color: black;
-}
-.form-label{
-
+  }
+  .form-label {
     color: black;
-}
-
-.image-login{
-
+  }
+  .image-login {
     width: 250px;
     height: 80px;
-    margin-top: 30px;
-    margin-bottom: 20px;
-}
-@media(min-width: 418px){
-
-    .content{
-        max-height: 500px;
-    }
-}
-</style>
+    margin: 30px 0;
+  }
+  </style>
+  
