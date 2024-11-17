@@ -39,33 +39,6 @@ public class UserController {
         }
     }
 
-    /*
-    @PostMapping("/register")
-    public  ResponseEntity<UserEntity> registerUser(@RequestBody Map<String,String> credentials){
-        try{
-            String userName = credentials.get("userName");
-            String userPassword = credentials.get("userPassword");
-            String userEmail = credentials.get("userEmail");
-            System.out.println(userName);
-            System.out.println(userPassword);
-            System.out.println(userEmail);
-
-            UserEntity user = new UserEntity();
-            user.setUserName(userName);
-            user.setUserPassword(userPassword);
-            user.setUserEmail(userEmail);
-
-            userService.addUser(user);
-
-            return ResponseEntity.ok(userService.addUser(user));
-            //return "ok";
-        } catch (Exception e){
-            return ResponseEntity.notFound().build();
-            //return "error";
-        }
-    }
-    */
-
     @PostMapping("/register")
     public ResponseEntity<UserEntity> registerUser(@RequestBody UserEntity user) {
         try {

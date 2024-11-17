@@ -2,6 +2,7 @@ package Tdb.Control2Application.persistence.repository;
 
 import Tdb.Control2Application.persistence.entity.TaskEntity;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -10,10 +11,10 @@ public interface TaskRepository {
     TaskEntity addTask(TaskEntity task);
     void modifyTaskTitle(long taskId, String taskTitle);
     void modifyTaskDesc(long taskId, String taskDesc);
-    void modifyTaskEndDate(long taskId, Date taskEndDate);
+    void modifyTaskEndDate(long taskId, LocalDate taskEndDate);
     boolean deleteTask(long taskId);
     void handleIsCompleted(long taskId);
-    TaskEntity getById(long taskId);
+    TaskEntity getById(Long taskId);
     List<TaskEntity> getByUserId(long taskUserId);
     List<TaskEntity> getCompletedTasks(long userId);
     List<TaskEntity> getUncompletedTasks(long userId);

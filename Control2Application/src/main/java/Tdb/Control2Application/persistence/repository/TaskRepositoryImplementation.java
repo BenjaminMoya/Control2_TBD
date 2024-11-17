@@ -1,10 +1,12 @@
 package Tdb.Control2Application.persistence.repository;
 
 import Tdb.Control2Application.persistence.entity.TaskEntity;
+import Tdb.Control2Application.persistence.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Sql2o;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -17,16 +19,16 @@ public class TaskRepositoryImplementation implements TaskRepository{
 
     @Override
     public TaskEntity addTask(TaskEntity task) {
-        String sql = "INSERT INTO tasks (taskuserid, tasktitle, taskdesc, taskend_date, iscompleted) " +
-                "VALUES (:taskUserId, :taskTitle, :taskDesc, :taskEndDate, :isCompleted)";
+        String sql = "INSERT INTO tasks (taskuserid, tasktitle, taskdesc, taskenddate, iscompleted) " +
+                "VALUES (:taskuserid, :tasktitle, :taskdesc, :taskenddate, :iscompleted)";
 
         try (org.sql2o.Connection con = sql2o.open()) { // Usamos sql2o.open()
             Long generatedId = (Long) con.createQuery(sql, true)
-                    .addParameter("taskUserId", task.getTaskuserid()) // Campo correcto
-                    .addParameter("taskTitle", task.getTasktitle())
-                    .addParameter("taskDesc", task.getTaskdesc())
-                    .addParameter("taskEndDate", task.getTaskend_date())
-                    .addParameter("isCompleted", task.isIscompleted())
+                    .addParameter("taskuserid", task.getTaskuserid()) // Campo correcto
+                    .addParameter("tasktitle", task.getTasktitle())
+                    .addParameter("taskdesc", task.getTaskdesc())
+                    .addParameter("taskenddate", task.getTaskenddate())
+                    .addParameter("iscompleted", task.isIscompleted())
                     .executeUpdate()
                     .getKey();
 
@@ -38,8 +40,6 @@ public class TaskRepositoryImplementation implements TaskRepository{
             throw new RuntimeException("Error al agregar la tarea: " + e.getMessage(), e);
         }
     }
-
-
 
     @Override
     public void modifyTaskTitle(long taskId, String taskTitle) {
@@ -62,10 +62,10 @@ public class TaskRepositoryImplementation implements TaskRepository{
     }
 
     @Override
-    public void modifyTaskEndDate(long taskId, Date taskEndDate) {
+    public void modifyTaskEndDate(long taskId, LocalDate taskEndDate) {
         try (org.sql2o.Connection con = sql2o.open()) {
-            con.createQuery("UPDATE tasks SET taskend_date = :taskend_date WHERE taskid = :taskid")
-                    .addParameter("taskend_date", taskEndDate)
+            con.createQuery("UPDATE tasks SET taskenddate = :taskenddate WHERE taskid = :taskid")
+                    .addParameter("taskenddate", taskEndDate)
                     .addParameter("taskid", taskId)
                     .executeUpdate();
         }
@@ -97,17 +97,17 @@ public class TaskRepositoryImplementation implements TaskRepository{
     }
 
     @Override
-    public TaskEntity getById(long taskId) {
-        try (org.sql2o.Connection con = sql2o.open()) {
-            return con.createQuery("SELECT * FROM tasks WHERE taskid = :taskid")
-                    .addParameter("taskid", taskId)
+    public TaskEntity getById(Long taskId) {
+        try(org.sql2o.Connection con = sql2o.open()){
+            return con.createQuery("SELECT * FROM tasks WHERE taskid=:taskid")
+                    .addParameter("taskid",taskId)
                     .executeAndFetchFirst(TaskEntity.class);
         }
     }
 
     @Override
     public List<TaskEntity> getByUserId(long taskUserId) {
-        String sql = "SELECT taskid, taskuserid, tasktitle, taskdesc, taskend_date, iscompleted " +
+        String sql = "SELECT taskid, taskuserid, tasktitle, taskdesc, taskenddate, iscompleted " +
                 "FROM tasks WHERE taskuserid = :taskuserid";
 
         try (org.sql2o.Connection con = sql2o.open()) {
@@ -117,7 +117,7 @@ public class TaskRepositoryImplementation implements TaskRepository{
                     .addColumnMapping("taskuserid", "taskuserid")
                     .addColumnMapping("tasktitle", "tasktitle")
                     .addColumnMapping("taskdesc", "taskdesc")
-                    .addColumnMapping("taskend_date", "taskend_date")
+                    .addColumnMapping("taskenddate", "taskenddate")
                     .addColumnMapping("iscompleted", "iscompleted")
                     .executeAndFetch(TaskEntity.class);
         } catch (Exception e) {

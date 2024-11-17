@@ -1,13 +1,14 @@
 package Tdb.Control2Application.controller;
 
 import Tdb.Control2Application.persistence.entity.TaskEntity;
+import Tdb.Control2Application.persistence.entity.UserEntity;
 import Tdb.Control2Application.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -41,7 +42,7 @@ public class TaskController {
 
     @PostMapping("/update/end/{id}")
     public void modifyTaskEndDate(@PathVariable long id,
-                                  @RequestParam("date") Date taskEndDate){
+                                  @RequestParam("date") LocalDate taskEndDate){
         taskService.modifyTaskEndDate(id,taskEndDate);
     }
 
@@ -55,12 +56,12 @@ public class TaskController {
     }
 
     @PostMapping("/complete/{id}")
-    public void handleIsCompleted(Long taskId){
-        taskService.handleIsCompleted(taskId);
+    public void handleIsCompleted(@PathVariable long id){
+        taskService.handleIsCompleted(id);
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<TaskEntity> getTaskById(@PathVariable long id){
+    public ResponseEntity<TaskEntity> getTask(@PathVariable Long id){
         TaskEntity task = taskService.getTaskById(id);
 
         if(task != null){

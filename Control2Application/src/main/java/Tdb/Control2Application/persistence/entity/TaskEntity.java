@@ -12,10 +12,10 @@ import java.util.Date;
 @AllArgsConstructor
 public class TaskEntity {
 
-    private long taskid;
+    private Long taskid;
     private long taskuserid;
     private String tasktitle;
     private String taskdesc;
-    private Date taskend_date;
+    private Date taskenddate;
     private boolean iscompleted;
 }

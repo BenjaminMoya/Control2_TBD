@@ -51,7 +51,7 @@ export default {
                 taskuserid: user.userid,     // Nombre cambiado para coincidir con el backend
                 tasktitle: this.taskTitle,    // Nombre ajustado para coincidir con el backend
                 taskdesc: this.taskDesc,      // Nombre ajustado para coincidir con el backend
-                taskend_date: this.taskEndDate, // Nombre ajustado para coincidir con el backend
+                taskenddate: this.taskEndDate, // Nombre ajustado para coincidir con el backend
                 iscompleted: this.isCompleted || false // Nombre ajustado para coincidir con el backend
             };
 

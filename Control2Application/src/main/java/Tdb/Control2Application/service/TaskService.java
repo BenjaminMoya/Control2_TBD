@@ -1,10 +1,12 @@
 package Tdb.Control2Application.service;
 
 import Tdb.Control2Application.persistence.entity.TaskEntity;
+import Tdb.Control2Application.persistence.entity.UserEntity;
 import Tdb.Control2Application.persistence.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class TaskService {
         taskRepository.modifyTaskDesc(taskId,taskDesc);
     }
 
-    public void modifyTaskEndDate(long taskId, Date taskEndDate){
+    public void modifyTaskEndDate(long taskId, LocalDate taskEndDate){
         taskRepository.modifyTaskEndDate(taskId,taskEndDate);
     }
 
@@ -44,7 +46,7 @@ public class TaskService {
         taskRepository.handleIsCompleted(taskId);
     }
 
-    public TaskEntity getTaskById(long id){ return taskRepository.getById(id); }
+    public TaskEntity getTaskById(Long id){ return taskRepository.getById(id); }
 
     public List<TaskEntity> getTaskByUserId(long userId){ return taskRepository.getByUserId(userId); }
 

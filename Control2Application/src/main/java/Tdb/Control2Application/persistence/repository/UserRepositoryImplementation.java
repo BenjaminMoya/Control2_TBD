@@ -14,60 +14,31 @@ public class UserRepositoryImplementation implements UserRepository{
 
     @Override
     public UserEntity addUser(UserEntity user) {
-        try (Connection con = sql2o.beginTransaction()) { // Usa una transacción
-            String sql = "INSERT INTO users (username, userpassword, useremail) VALUES (:username, :userpassword, :useremail)";
+        String sql = "INSERT INTO users (username, userpassword, useremail, isauth)" +
+                "VALUES (:username, :userpassword, :useremail, :isauth)";
 
-            con.createQuery(sql)
+        try (org.sql2o.Connection con = sql2o.open()) {
+            Long generatedId = (Long) con.createQuery(sql, true)
                     .addParameter("username", user.getUsername())
                     .addParameter("userpassword", user.getUserpassword())
                     .addParameter("useremail", user.getUseremail())
-                    .executeUpdate();
-            con.commit(); // Confirmar la transacción
+                    .addParameter("isauth", user.isIsauth())
+                    .executeUpdate()
+                    .getKey();
+
+            user.setUserid(generatedId);
             return user;
         } catch (Exception e) {
             e.printStackTrace();
             throw e; // Manejar la excepción si es necesario
         }
     }
-    /*
-    @Override
-    public UserEntity addUser(UserEntity user) {
-        String sql = "INSERT INTO users (username, userpassword, useremail) VALUES (:username, :userpassword, :useremail)";
-        try (org.sql2o.Connection con = sql2o.open()) {
-            con.createQuery(sql)
-                    .addParameter("username", user.getUsername())
-                    .addParameter("userpassword", user.getUserpassword())
-                    .addParameter("useremail", user.getUseremail())
-                    .executeUpdate();
-            return user;
-        }
-    }
-    */
-
-    /*
-    @Override
-    public UserEntity addUser(UserEntity user){
-        String sql = "INSERT INTO users (username, userpassword, useremail) " +
-                "VALUES (:username, :userpassword, :useremail) RETURNING userid";
-
-        try (Connection con = sql2o.open()) {
-            Long userId = con.createQuery(sql)
-                    .addParameter("userName", user.getUserName())
-                    .addParameter("userPassword", user.getUserPassword())
-                    .addParameter("userEmail", user.getUserEmail())
-                    .executeAndFetchFirst(Long.class);
-
-            user.setUserId(userId); // Asignar el ID generado a la entidad
-            return user;
-        }
-    }
-    */
 
     @Override
     public UserEntity getById(Long userId) {
         try(org.sql2o.Connection con = sql2o.open()){
-            return con.createQuery("SELECT * FROM user WHERE userId=:user_id")
-                    .addParameter("user_id",userId)
+            return con.createQuery("SELECT * FROM users WHERE userid=:userid")
+                    .addParameter("userid",userId)
                     .executeAndFetchFirst(UserEntity.class);
         }
     }
@@ -75,7 +46,7 @@ public class UserRepositoryImplementation implements UserRepository{
     @Override
     public UserEntity getByEmail(String userEmail) {
         try(org.sql2o.Connection con = sql2o.open()){
-            return con.createQuery("SELECT * FROM users WHERE userEmail=:useremail")
+            return con.createQuery("SELECT * FROM users WHERE useremail=:useremail")
                     .addParameter("useremail",userEmail)
                     .executeAndFetchFirst(UserEntity.class);
         }
