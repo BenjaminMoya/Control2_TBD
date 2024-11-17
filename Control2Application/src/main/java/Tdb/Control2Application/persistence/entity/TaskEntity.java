@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -11,10 +12,10 @@ import java.util.Date;
 @AllArgsConstructor
 public class TaskEntity {
 
-    private Long taskId;
-    private Long taskUserId;
-    private String taskTitle;
-    private String taskDesc;
-    private Date taskEndDate;
-    private boolean isCompleted;
+    private long taskid;
+    private long taskuserid;
+    private String tasktitle;
+    private String taskdesc;
+    private Date taskend_date;
+    private boolean iscompleted;
 }

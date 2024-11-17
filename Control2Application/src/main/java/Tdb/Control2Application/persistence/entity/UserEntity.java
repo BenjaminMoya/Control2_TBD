@@ -12,6 +12,6 @@ public class UserEntity {
     private String username;
     private String userpassword;
     private String useremail;
-    //private boolean isAuth;
+    private boolean isAuth;
 
 }

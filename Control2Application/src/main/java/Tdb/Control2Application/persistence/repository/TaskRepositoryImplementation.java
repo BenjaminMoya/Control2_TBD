@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Sql2o;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -15,62 +16,68 @@ public class TaskRepositoryImplementation implements TaskRepository{
     private Sql2o sql2o;
 
     @Override
-    public TaskEntity addTask(TaskEntity task){
-        String sql = "INSERT INTO tasks (task_user_id, task_title, task_desc, task_end_date,is_completed) " +
+    public TaskEntity addTask(TaskEntity task) {
+        String sql = "INSERT INTO tasks (taskuserid, tasktitle, taskdesc, taskend_date, iscompleted) " +
                 "VALUES (:taskUserId, :taskTitle, :taskDesc, :taskEndDate, :isCompleted)";
 
-        try (org.sql2o.Connection con = sql2o.open()) {
+        try (org.sql2o.Connection con = sql2o.open()) { // Usamos sql2o.open()
             Long generatedId = (Long) con.createQuery(sql, true)
-                    .addParameter("taskUserId", task.getTaskUserId())
-                    .addParameter("taskTitle", task.getTaskTitle())
-                    .addParameter("taskDesc", task.getTaskDesc())
-                    .addParameter("taskEndDate",task.getTaskEndDate())
-                    .addParameter("isCompleted", task.isCompleted())
+                    .addParameter("taskUserId", task.getTaskuserid()) // Campo correcto
+                    .addParameter("taskTitle", task.getTasktitle())
+                    .addParameter("taskDesc", task.getTaskdesc())
+                    .addParameter("taskEndDate", task.getTaskend_date())
+                    .addParameter("isCompleted", task.isIscompleted())
                     .executeUpdate()
                     .getKey();
 
-            task.setTaskId(generatedId);
+            task.setTaskid(generatedId); // Establecer el ID generado
             return task;
+        } catch (Exception e) {
+            // Manejamos cualquier error que ocurra
+            e.printStackTrace();
+            throw new RuntimeException("Error al agregar la tarea: " + e.getMessage(), e);
         }
     }
 
-    //Estos metodos modifican los atributos en la base de datos, se les pasa el objeto TaskEntity y el nuevo valor
+
+
     @Override
-    public void modifyTaskTitle(Long taskId, String taskTitle) {
+    public void modifyTaskTitle(long taskId, String taskTitle) {
         try (org.sql2o.Connection con = sql2o.open()) {
-            con.createQuery("UPDATE tasks SET task_title = :task_title WHERE task_id = :task_id")
-                    .addParameter("task_title", taskTitle)
-                    .addParameter("task_id", taskId)
+            con.createQuery("UPDATE tasks SET tasktitle = :tasktitle WHERE taskid = :taskid")
+                    .addParameter("tasktitle", taskTitle)
+                    .addParameter("taskid", taskId)
                     .executeUpdate();
         }
     }
 
     @Override
-    public void modifyTaskDesc(Long taskId, String taskDesc) {
+    public void modifyTaskDesc(long taskId, String taskDesc) {
         try (org.sql2o.Connection con = sql2o.open()) {
-            con.createQuery("UPDATE tasks SET task_desc = :task_desc WHERE task_id = :task_id")
-                    .addParameter("task_desc", taskDesc)
-                    .addParameter("task_id", taskId)
-                    .executeUpdate();
-        }
-    }
-    @Override
-    public void modifyTaskEndDate(Long taskId, Date taskEndDate) {
-        try (org.sql2o.Connection con = sql2o.open()) {
-            con.createQuery("UPDATE tasks SET task_end_date = :task_end_date WHERE task_id = :task_id")
-                    .addParameter("task_end_date", taskEndDate)
-                    .addParameter("task_id", taskId)
+            con.createQuery("UPDATE tasks SET taskdesc = :taskdesc WHERE taskid = :taskid")
+                    .addParameter("taskdesc", taskDesc)
+                    .addParameter("taskid", taskId)
                     .executeUpdate();
         }
     }
 
     @Override
-    public boolean deleteTask(Long taskId){
-        String sql = "DELETE FROM tasks WHERE task_id = :taskId";
+    public void modifyTaskEndDate(long taskId, Date taskEndDate) {
+        try (org.sql2o.Connection con = sql2o.open()) {
+            con.createQuery("UPDATE tasks SET taskend_date = :taskend_date WHERE taskid = :taskid")
+                    .addParameter("taskend_date", taskEndDate)
+                    .addParameter("taskid", taskId)
+                    .executeUpdate();
+        }
+    }
+
+    @Override
+    public boolean deleteTask(long taskId) {
+        String sql = "DELETE FROM tasks WHERE taskid = :taskid";
 
         try (org.sql2o.Connection con = sql2o.open()) {
             int result = con.createQuery(sql)
-                    .addParameter("task_id", taskId)
+                    .addParameter("taskid", taskId)
                     .executeUpdate()
                     .getResult();
 
@@ -81,75 +88,94 @@ public class TaskRepositoryImplementation implements TaskRepository{
     }
 
     @Override
-    public void handleIsCompleted(Long taskId) {
+    public void handleIsCompleted(long taskId) {
         try (org.sql2o.Connection con = sql2o.open()) {
-            con.createQuery("UPDATE tasks SET is_completed = NOT is_completed WHERE task_id = :task_id")
-                    .addParameter("task_id", taskId)
+            con.createQuery("UPDATE tasks SET iscompleted = NOT iscompleted WHERE taskid = :taskid")
+                    .addParameter("taskid", taskId)
                     .executeUpdate();
         }
     }
 
     @Override
-    public TaskEntity getById(Long taskId) {
-        try(org.sql2o.Connection con = sql2o.open()){
-            return con.createQuery("SELECT * FROM tasks WHERE taskId=:task_id")
-                    .addParameter("task_id",taskId)
+    public TaskEntity getById(long taskId) {
+        try (org.sql2o.Connection con = sql2o.open()) {
+            return con.createQuery("SELECT * FROM tasks WHERE taskid = :taskid")
+                    .addParameter("taskid", taskId)
                     .executeAndFetchFirst(TaskEntity.class);
         }
     }
 
     @Override
-    public List<TaskEntity> getByUserId(Long taskUserId) {
-        try(org.sql2o.Connection con = sql2o.open()){
-            return con.createQuery("SELECT * FROM tasks WHERE taskUserId=:task_user_id")
-                    .addParameter("task_user_id",taskUserId)
+    public List<TaskEntity> getByUserId(long taskUserId) {
+        String sql = "SELECT taskid, taskuserid, tasktitle, taskdesc, taskend_date, iscompleted " +
+                "FROM tasks WHERE taskuserid = :taskuserid";
+
+        try (org.sql2o.Connection con = sql2o.open()) {
+            return con.createQuery(sql)
+                    .addParameter("taskuserid", taskUserId)
+                    .addColumnMapping("taskid", "taskid") // Mapeo explícito
+                    .addColumnMapping("taskuserid", "taskuserid")
+                    .addColumnMapping("tasktitle", "tasktitle")
+                    .addColumnMapping("taskdesc", "taskdesc")
+                    .addColumnMapping("taskend_date", "taskend_date")
+                    .addColumnMapping("iscompleted", "iscompleted")
+                    .executeAndFetch(TaskEntity.class);
+        } catch (Exception e) {
+            // Manejo de errores mejorado para depurar el problema
+            System.err.println("Error al obtener tareas por userID: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Error al obtener tareas por usuario", e);
+        }
+    }
+
+
+
+    @Override
+    public List<TaskEntity> getCompletedTasks(long userId) {
+        String sql = "SELECT * FROM tasks WHERE taskuserid = :taskuserid AND iscompleted = true";
+
+        try (org.sql2o.Connection con = sql2o.open()) {
+            return con.createQuery(sql)
+                    .addParameter("taskuserid", userId)
                     .executeAndFetch(TaskEntity.class);
         }
     }
 
     @Override
-    public List<TaskEntity> getCompletedTasks(Long userId){
-        String sql = "SELECT * FROM tasks WHERE task_user_id = :userId AND is_completed = true";
+    public List<TaskEntity> getUncompletedTasks(long userId) {
+        String sql = "SELECT * FROM tasks WHERE taskuserid = :taskuserid AND iscompleted = false";
 
         try (org.sql2o.Connection con = sql2o.open()) {
             return con.createQuery(sql)
-                    .addParameter("userId", userId)
-                    .executeAndFetch(TaskEntity.class);
-        }
-    }
-    @Override
-    public List<TaskEntity> getUncompletedTasks(Long userId){
-        String sql = "SELECT * FROM tasks WHERE task_user_id = :userId AND is_completed = false";
-
-        try (org.sql2o.Connection con = sql2o.open()) {
-            return con.createQuery(sql)
-                    .addParameter("userId", userId)
-                    .executeAndFetch(TaskEntity.class);
-        }
-    }
-    @Override
-    public List<TaskEntity> getTasksByTitleKeyword(Long userId, String keyword) {
-        String sql = "SELECT * FROM tasks WHERE task_user_id = :userId AND taskTitle LIKE :keyword";
-
-        try (org.sql2o.Connection con = sql2o.open()) {
-            return con.createQuery(sql)
-                    .addParameter("userId", userId)
-                    .addParameter("keyword", "%" + keyword + "%")  // Para coincidencias parciales en el título
+                    .addParameter("taskuserid", userId)
                     .executeAndFetch(TaskEntity.class);
         }
     }
 
     @Override
-    public List<TaskEntity> getTasksByDescriptionKeyword(Long userId, String keyword) {
-        String sql = "SELECT * FROM tasks WHERE task_user_id = :userId AND taskDesc LIKE :keyword";
+    public List<TaskEntity> getTasksByTitleKeyword(long userId, String keyword) {
+        String sql = "SELECT * FROM tasks WHERE taskuserid = :taskuserid AND tasktitle LIKE :keyword";
 
         try (org.sql2o.Connection con = sql2o.open()) {
             return con.createQuery(sql)
-                    .addParameter("userId", userId)
-                    .addParameter("keyword", "%" + keyword + "%")  // Para coincidencias parciales en la descripción
+                    .addParameter("taskuserid", userId)
+                    .addParameter("keyword", "%" + keyword + "%")
                     .executeAndFetch(TaskEntity.class);
         }
     }
+
+    @Override
+    public List<TaskEntity> getTasksByDescriptionKeyword(long userId, String keyword) {
+        String sql = "SELECT * FROM tasks WHERE taskuserid = :taskuserid AND taskdesc LIKE :keyword";
+
+        try (org.sql2o.Connection con = sql2o.open()) {
+            return con.createQuery(sql)
+                    .addParameter("taskuserid", userId)
+                    .addParameter("keyword", "%" + keyword + "%")
+                    .executeAndFetch(TaskEntity.class);
+        }
+    }
+
 
 
 

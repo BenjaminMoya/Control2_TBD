@@ -18,15 +18,15 @@ public class TaskService {
         return taskRepository.addTask(task);
     }
 
-    public void modifyTaskTitle(Long taskId, String taskTitle){
+    public void modifyTaskTitle(long taskId, String taskTitle){
         taskRepository.modifyTaskTitle(taskId,taskTitle);
     }
 
-    public void modifyTaskDesc(Long taskId, String taskDesc){
+    public void modifyTaskDesc(long taskId, String taskDesc){
         taskRepository.modifyTaskDesc(taskId,taskDesc);
     }
 
-    public void modifyTaskEndDate(Long taskId, Date taskEndDate){
+    public void modifyTaskEndDate(long taskId, Date taskEndDate){
         taskRepository.modifyTaskEndDate(taskId,taskEndDate);
     }
 
@@ -40,27 +40,27 @@ public class TaskService {
 
     }
 
-    public void handleIsCompleted(Long taskId){
+    public void handleIsCompleted(long taskId){
         taskRepository.handleIsCompleted(taskId);
     }
 
-    public TaskEntity getTaskById(Long id){ return taskRepository.getById(id); }
+    public TaskEntity getTaskById(long id){ return taskRepository.getById(id); }
 
-    public List<TaskEntity> getTaskByUserId(Long userId){ return taskRepository.getByUserId(userId); }
+    public List<TaskEntity> getTaskByUserId(long userId){ return taskRepository.getByUserId(userId); }
 
-    public List<TaskEntity> getCompletedTask(Long userId){
+    public List<TaskEntity> getCompletedTask(long userId){
         return taskRepository.getCompletedTasks(userId);
     }
 
-    public List<TaskEntity> getUncompletedTasks(Long userId){
+    public List<TaskEntity> getUncompletedTasks(long userId){
         return taskRepository.getUncompletedTasks(userId);
     }
 
-    public List<TaskEntity> getTasksByTitleKeyword(Long userId, String keyword){
+    public List<TaskEntity> getTasksByTitleKeyword(long userId, String keyword){
         return taskRepository.getTasksByTitleKeyword(userId,keyword);
     }
 
-    public List<TaskEntity> getTasksByDescriptionKeyword(Long userId, String keyword){
+    public List<TaskEntity> getTasksByDescriptionKeyword(long userId, String keyword){
         return taskRepository.getTasksByDescriptionKeyword(userId,keyword);
     }
 

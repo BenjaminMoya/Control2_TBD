@@ -1,5 +1,5 @@
 <template>
-        <main>
+    <main>
         <div class="container main">
             <div class="content">
                 <div class="header">Crear tarea</div>
@@ -13,7 +13,7 @@
                     <button class="sessionButton" @click="addTask">Crear</button>
                 </div>
                 <router-link to="/home">
-                        <div class="alsoButton" @click="redirectUser">Volver</div>
+                    <div class="alsoButton">Volver</div>
                 </router-link>
             </div>
         </div>
@@ -23,58 +23,57 @@
 <script>
 import axios from 'axios'
 import mainComponent from '../components/mainComponent.vue'
-
-// Redirigir a la página de inicio
-function redirectUser(){
-
-    window.location.href = '/';
-}
+import { userState } from "../components/userState"
 
 export default {
     components: {
         mainComponent
     },
 
-    data(){
-        return{
+    data() {
+        return {
             taskTitle: '',
             taskDesc: '',
             taskEndDate: '',
-            isCompleted: false,
-            taskUserId: ''
+            isCompleted: false
         }
     },
 
-    
-
     methods: {
-        // Agregar tarea
-        async addTask(){
-            if(this.taskTitle != '' && this.taskDesc != '' && this.taskEndDate != ''){
-                const user = JSON.parse(sessionStorage.getItem('userLogged'));
-                const userId = user.id;
+        async addTask() {
+            // Obtener userLogged desde sessionStorage
+            const user = JSON.parse(sessionStorage.getItem('userLogged'));
+            //mostar el id del usuario logeado
+            console.log(user.userid);
 
-                const new_task = {
-                    "taskTitle": this.taskTitle,
-                    "taskDesc": this.taskDesc,
-                    "TaskEndDate": this.taskEndDate,
-                    "isCompleted": this.isCompleted,
-                    "taskUserId": userId
-                };
-                try{
-                    const crear = await axios.post(import.meta.env.VITE_BASE_URL + "api/task/add",new_task);
-                    console.log(crear);
-                    alert('Tarea creada con éxito');
-                }catch(error){
-                    alert('Error al crear tarea');
-                }
-            }else{
-                alert('Por favor, complete todos los campos');
-            }      
+            // Crear la nueva tarea
+            const new_task = {
+                taskuserid: user.userid,     // Nombre cambiado para coincidir con el backend
+                tasktitle: this.taskTitle,    // Nombre ajustado para coincidir con el backend
+                taskdesc: this.taskDesc,      // Nombre ajustado para coincidir con el backend
+                taskend_date: this.taskEndDate, // Nombre ajustado para coincidir con el backend
+                iscompleted: this.isCompleted || false // Nombre ajustado para coincidir con el backend
+            };
+
+            try {
+                const response = await axios.post( import.meta.env.VITE_BASE_URL + "api/task/addtask",new_task
+                );
+                console.log(response.data);
+                alert('Tarea creada con éxito');
+                // Opcional: Reinicia los campos del formulario
+                this.taskTitle = '';
+                this.taskDesc = '';
+                this.taskEndDate = '';
+                this.isCompleted = false;
+            } catch (error) {
+                console.error('Error al crear tarea:', error.response ? error.response.data : error.message);
+                alert('Error al crear tarea');
+            }
         }
     }
 }
 </script>
+
 
 <style scoped>
 .main{

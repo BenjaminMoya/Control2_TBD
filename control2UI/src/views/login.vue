@@ -62,11 +62,14 @@
 //Importaciones para la logica de la vista
 import axios from 'axios'
 import mainComponent from '../components/mainComponent.vue'
+import { userState } from "../components/userState"; // Importa el estado global del usuario
 
 function redirectUser(){//Funcion para redirigir al usuario a la pagina principal
 
     window.location.href = '/';
 }
+
+
 
 export default{
 
@@ -91,51 +94,50 @@ export default{
 
     methods:{//Metodos de la vista
 
-        async login(){//Metodo para el inicio de sesion
+        async login() {
+            const params = new URLSearchParams();
+            params.append("email", this.usermail); // Ajusta el nombre del parámetro según lo que espera el backend
+            params.append("password", this.password);
 
-            const user = {
+            try {
+                const respuesta = await axios.post(
+                    import.meta.env.VITE_BASE_URL + "api/user/login",
+                    params
+                );
 
-                "userEmail":this.usermail,
-                "userPassword":this.password,
+                if (respuesta.data) {
+                    try {
+                        localStorage
+                        // Búsqueda del usuario logueado
+                        const userResponse = await axios.get(
+                    import.meta.env.VITE_BASE_URL + `api/user/getemail/${this.usermail}`
+                );
+                //cambiar isLogged a true 
+                sessionStorage.setItem('isLogged', true);
 
-            };
-            try{
-                const respuesta = await axios.post(import.meta.env.VITE_BASE_URL + "api/user/login",user);
-                if(respuesta.data == 1){
+                const user = userResponse.data;
 
-                    sessionStorage.setItem('isLogged',JSON.stringify(true));
-                    try{//Busqueda del usuario logueado
-                        const respuesta = await axios.get(import.meta.env.VITE_BASE_URL + "api/user/getuser",{params:{"UserEmail":this.usermail}});
-                        sessionStorage.setItem('userLogged',JSON.stringify(respuesta.data));
-                        this.userLogged = respuesta.data;
-                    } catch(error){
+                // Guardar el usuario en el estado global
+                userState.setUser(user);
 
-                        console.log("Error en axios: Busqueda del usuario");
+                        this.userLogged = userState.getUser(); // Opcional: Usar localmente
+
+                        console.log("Usuario logueado:", this.userLogged);
+                    } catch (error) {
+                        console.error("Error en axios: Búsqueda del usuario", error.response ? error.response.data : error.message);
                     }
 
-                    try{//Busqueda de propiedades del usuario logueado
-                        const respuesta = await axios.get(import.meta.env.VITE_BASE_URL + "api/property/user/" + this.userLogged.id);
-                        sessionStorage.setItem('userProperties',JSON.stringify(respuesta.data));
-                        this.userProperties = respuesta.data;
-                      
-                    }catch(error){
-
-                        console.log("Error en axios: Busqueda de propiedades");
-
-                    }
-                    redirectUser();
+                    // Redirigir al usuario después del login
+                    window.location.href = "/home";
+                } else {
+                    alert("Credenciales inválidas");
                 }
-                if(respuesta.data == 0){
-
-                    alert("Credenciales invalidas");
-                }
-
             } catch (error) {
-
-                console.log("Error en axios: Login");
-
+                console.error("Error en axios: Login", error.response ? error.response.data : error.message);
             }
-        },
+        }
+    }
+,
         handleChanger(){//Manejador de opciones para cambiar entre iniciar sesion y registrarse
 
             this.register = !this.register;
@@ -177,8 +179,8 @@ export default{
                     const new_user = {
 
                         "username":this.nameRegister,
-                        "userEmail":this.useremailRegister,
-                        "userPassword":this.passwordRegister,
+                        "useremail":this.useremailRegister,
+                        "userpassword":this.passwordRegister,
                         
                     };
                     try{
@@ -201,7 +203,7 @@ export default{
             }
         },
     }
-}
+
 </script>
 
 <style scoped>

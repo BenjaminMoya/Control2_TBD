@@ -10,11 +10,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api/user")
 public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @GetMapping("/getemail/{email}")
+    public ResponseEntity<UserEntity> getUserByEmail(@PathVariable("email") String email) {
+        UserEntity user = userService.getUserByEmail(email);
+
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 
     @GetMapping("/get/{id}")
     public ResponseEntity<UserEntity> getUser(@PathVariable Long id){

@@ -75,8 +75,8 @@ public class UserRepositoryImplementation implements UserRepository{
     @Override
     public UserEntity getByEmail(String userEmail) {
         try(org.sql2o.Connection con = sql2o.open()){
-            return con.createQuery("SELECT * FROM user WHERE userEmail=:user_email")
-                    .addParameter("user_email",userEmail)
+            return con.createQuery("SELECT * FROM users WHERE userEmail=:useremail")
+                    .addParameter("useremail",userEmail)
                     .executeAndFetchFirst(UserEntity.class);
         }
     }
