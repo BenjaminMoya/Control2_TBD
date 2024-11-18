@@ -16,9 +16,9 @@ public class JwtUtil {
     private static Algorithm ALGORITHM = Algorithm.HMAC256(SecretCode);
 
     //Create a JWT with useremail, the alternative is use the id
-    public String create(String username){
+    public String create(String useremail){
         return JWT.create()     //init JWT creation
-                .withSubject(username)      //
+                .withSubject(useremail)      //
                 .withIssuer("app")
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(10)))

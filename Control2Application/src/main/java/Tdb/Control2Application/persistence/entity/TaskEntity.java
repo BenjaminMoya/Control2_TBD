@@ -1,4 +1,4 @@
-package Tdb.Control2Application.persvvistence.entity;
+package Tdb.Control2Application.persistence.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

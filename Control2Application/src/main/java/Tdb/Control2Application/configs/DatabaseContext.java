@@ -8,6 +8,6 @@ import org.sql2o.Sql2o;
 public class DatabaseContext {
     @Bean
     public Sql2o sql2o(){
-        return new Sql2o("jdbc:postgresql://localhost:5433/control2","postgres","1223");
+        return new Sql2o("jdbc:postgresql://localhost:5432/control2app","postgres","36133520");
     }
 }
