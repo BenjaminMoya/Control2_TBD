@@ -24,6 +24,7 @@
 import axios from 'axios'
 import mainComponent from '../components/mainComponent.vue'
 import { userState } from "../components/userState"
+import { format } from 'date-fns';
 
 export default {
     components: {
@@ -50,6 +51,8 @@ export default {
             }
             //mostar el id del usuario logeado
             console.log(user.userid);
+
+
 
             // Crear la nueva tarea
             const new_task = {
