@@ -331,6 +331,13 @@ async searchTasksByDescription() {
     },
     async markAsCompleted(taskId) {
       try {
+
+        const token = JSON.parse(sessionStorage.getItem('token'));
+          if (!user || !token) {
+              alert('Debe iniciar sesión para crear una tarea');
+              return;
+          }
+
         await axios.post(`http://localhost:8080/api/task/complete/${taskId}`);
         alert("Tarea marcada como completada.");
         this.fetchTasks();
@@ -360,6 +367,13 @@ async searchTasksByDescription() {
       }
     },
     openEditModal(task) {
+
+      const token = JSON.parse(sessionStorage.getItem('token'));
+        if (!user || !token) {
+          alert('Debe iniciar sesión para crear una tarea');
+          return;
+        }
+
       const newTitle = prompt("Editar título:", task.tasktitle);
       const newDesc = prompt("Editar descripción:", task.taskdesc);
       const newDate = prompt("Editar fecha límite (YYYY-MM-DD):", task.taskenddate);

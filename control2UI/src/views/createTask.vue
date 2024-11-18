@@ -43,6 +43,12 @@ export default {
         async addTask() {
             // Obtener userLogged desde sessionStorage
             const user = JSON.parse(sessionStorage.getItem('userLogged'));
+
+            const token = JSON.parse(sessionStorage.getItem('token'));
+            if (!user || !token) {
+                alert('Debe iniciar sesión para crear una tarea');
+                return;
+            }
             //mostar el id del usuario logeado
             console.log(user.userid);
 

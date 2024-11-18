@@ -118,6 +118,10 @@
               userState.setUser(userResponse.data);
               this.userLogged = userState.getUser();
               console.log("Usuario logueado:", this.userLogged);
+              
+              // Aqui se guarda el token obtenido a traves de axios en sessionStorage
+              sessionStorage.setItem("token", respuesta.data.token);
+
             } catch (error) {
               console.error("Error en axios: Búsqueda del usuario", error.response?.data || error.message);
             }
