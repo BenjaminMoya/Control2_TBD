@@ -2,8 +2,9 @@ package Tdb.Control2Application.service;
 
 import Tdb.Control2Application.persistence.entity.UserEntity;
 import Tdb.Control2Application.persistence.repository.UserRepository;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -29,5 +30,16 @@ public class UserService {
     public boolean login (String email, String password){
         UserEntity user = getUserByEmail(email);
         return user != null && Objects.equals(password, user.getUserpassword());
+    }
+
+    public UserDetails loadUserByEmail(String email) throws EmailNotFoundException {
+        UserEntity userEntity = userRepository.getByEmail(email);
+        if (userEntity == null){
+            throw new EmailNotFoundException("User not found");
+        }
+        return User.builder()
+                .username(userEntity.getUseremail())
+                .password(userEntity.getUserpassword()) // Asegúrate de que la contraseña esté encriptada
+                .build();
     }
 }

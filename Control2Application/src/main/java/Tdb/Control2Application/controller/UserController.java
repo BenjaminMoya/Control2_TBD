@@ -2,17 +2,15 @@ package Tdb.Control2Application.controller;
 
 import Tdb.Control2Application.persistence.entity.UserEntity;
 import Tdb.Control2Application.service.UserService;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.Map;
 
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/api/user")
-public class UserController {
+public class UserController  {
 
     @Autowired
     private UserService userService;

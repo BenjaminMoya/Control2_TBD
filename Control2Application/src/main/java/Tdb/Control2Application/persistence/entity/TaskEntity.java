@@ -1,10 +1,9 @@
-package Tdb.Control2Application.persistence.entity;
+package Tdb.Control2Application.persvvistence.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 @Data
