@@ -1,0 +1,7 @@
+-crear una base de datos llamada control2app
+-poblar la base de datos con query tool con el archivo tablas.sql.txt
+-acceder al archivo del backen application.properties y cambiar el usuario, el puerto y la contraseña que tenga asignada
+-corre el backend 
+-abre el fronend aveces es necesario ejecutar previamente npm, install vite --save-dev 
+-ejecutar el comando npm run dev 
+-empezar a utilizar 
