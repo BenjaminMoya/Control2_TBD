@@ -39,26 +39,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Tenemos dudas de como implementrare la proteccion csrf
-/*
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors((cors) -> {}) // Habilita CORS
-                .authorizeHttpRequests()
-                .requestMatchers("/api/user/login").permitAll() // Permitir acceso a login sin autenticación
-                .requestMatchers("/api/user/register").permitAll() // Permitir acceso a login sin autenticación
-                .anyRequest().authenticated() // Todas las demás solicitudes requieren autenticación
-                .sessionManagement(session -> session // Configura la política de creación de sesiones
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No se crean sesiones
-                )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // Agrega el filtro de JWT antes del filtro de autenticación
-
-        return http.build();
-    }
-*/
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();

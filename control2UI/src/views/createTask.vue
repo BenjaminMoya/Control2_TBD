@@ -44,8 +44,7 @@ export default {
             // Obtener userLogged desde sessionStorage
             const user = JSON.parse(sessionStorage.getItem('userLogged'));
 
-            const token = JSON.parse(sessionStorage.getItem('token'));
-            if (!user || !token) {
+            if (!user || !sessionStorage.getItem("token")) {
                 alert('Debe iniciar sesión para crear una tarea');
                 return;
             }
@@ -62,7 +61,12 @@ export default {
             };
 
             try {
-                const response = await axios.post( import.meta.env.VITE_BASE_URL + "api/task/addtask",new_task
+                const response = await axios.post( import.meta.env.VITE_BASE_URL + "api/task/addtask",new_task,
+                    {
+                      headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                      }
+                    }
                 );
                 console.log(response.data);
                 alert('Tarea creada con éxito');

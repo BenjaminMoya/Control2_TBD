@@ -263,7 +263,13 @@ export default {
     async fetchTasks() {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/task/get/user/${this.userLogged.userid}`
+          `http://localhost:8080/api/task/get/user/${this.userLogged.userid}`,{
+              headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`
+              }
+            },
+            { params: { desc: this.searchQuery } },
+
         );
         this.tasks = response.data;
         this.checkTasksWithUpcomingDeadline(); // Verificar fechas próximas al cargar
@@ -281,7 +287,12 @@ export default {
   try {
     const responseByTitle = await axios.get(
       `http://localhost:8080/api/task/get/title/${this.userLogged.userid}`,
-      { params: { title: this.searchQuery } }
+      { params: { title: this.searchQuery } },
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`
+          }
+        }
     );
 
     this.tasks = responseByTitle.data;
@@ -300,7 +311,12 @@ async searchTasksByDescription() {
   try {
     const responseByDesc = await axios.get(
       `http://localhost:8080/api/task/get/desc/${this.userLogged.userid}`,
-      { params: { desc: this.searchQuery } }
+      { params: { desc: this.searchQuery } }, {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`
+          }
+        }
+
     );
 
     this.tasks = responseByDesc.data;
@@ -317,7 +333,12 @@ async searchTasksByDescription() {
       if (!confirm("¿Estás seguro de que deseas eliminar esta tarea?")) return;
 
       try {
-        await axios.post(`http://localhost:8080/api/task/delete/${taskId}`);
+        await axios.post(`http://localhost:8080/api/task/delete/${taskId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`
+              }
+            });
         this.tasks = this.tasks.filter((task) => task.taskid !== taskId);
         alert("Tarea eliminada con éxito.");
       } catch (error) {
@@ -332,13 +353,20 @@ async searchTasksByDescription() {
     async markAsCompleted(taskId) {
       try {
 
-        const token = JSON.parse(sessionStorage.getItem('token'));
-          if (!user || !token) {
+
+          if (!user || !sessionStorage.getItem("token")) {
               alert('Debe iniciar sesión para crear una tarea');
               return;
           }
 
-        await axios.post(`http://localhost:8080/api/task/complete/${taskId}`);
+        await axios.post((`http://localhost:8080/api/task/complete/${taskId}`),
+              {
+              headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`
+              }
+            }
+
+            );
         alert("Tarea marcada como completada.");
         this.fetchTasks();
       } catch (error) {
@@ -368,8 +396,8 @@ async searchTasksByDescription() {
     },
     openEditModal(task) {
 
-      const token = JSON.parse(sessionStorage.getItem('token'));
-        if (!user || !token) {
+
+        if (!user || !sessionStorage.getItem("token")) {
           alert('Debe iniciar sesión para crear una tarea');
           return;
         }
@@ -379,21 +407,35 @@ async searchTasksByDescription() {
       const newDate = prompt("Editar fecha límite (YYYY-MM-DD):", task.taskenddate);
 
       axios
-        .post(`http://localhost:8080/api/task/update/title/${task.taskid}`, null, {
-          params: { title: newTitle },
-        })
+        .post(`http://localhost:8080/api/task/update/title/${task.taskid}`,null, {
+          params: { title: newTitle },},
+            {
+              headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`
+              }
+            })
         .then(() =>
           axios.post(
             `http://localhost:8080/api/task/update/desc/${task.taskid}`,
             null,
-            { params: { desc: newDesc } }
+            { params: { desc: newDesc } },
+              {
+                headers: {
+                  Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                }
+              }
           )
         )
         .then(() =>
           axios.post(
             `http://localhost:8080/api/task/update/end/${task.taskid}`,
             null,
-            { params: { date: newDate } }
+            { params: { date: newDate } },
+              {
+                headers: {
+                  Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                }
+              }
           )
         )
         .then(() => {

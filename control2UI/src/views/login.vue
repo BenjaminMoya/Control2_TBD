@@ -107,12 +107,17 @@
             import.meta.env.VITE_BASE_URL + "api/user/login",
             params
           );
-  
-          if (respuesta.data) {
+
+          if (respuesta.data.token != "") {
             try {
               const userResponse = await axios.get(
-                import.meta.env.VITE_BASE_URL + `api/user/getemail/${this.usermail}`
+                import.meta.env.VITE_BASE_URL + `api/user/getemail/${this.usermail}`,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${respuesta.data.token}`}
+                  }
               );
+              console.log(userResponse);
               sessionStorage.setItem("isLogged", true);
               sessionStorage.setItem("userLogged", JSON.stringify(userResponse.data));
               userState.setUser(userResponse.data);
@@ -120,13 +125,14 @@
               console.log("Usuario logueado:", this.userLogged);
               
               // Aqui se guarda el token obtenido a traves de axios en sessionStorage
+              console.log(respuesta.data.token);
               sessionStorage.setItem("token", respuesta.data.token);
+              window.location.href = "/home";
 
             } catch (error) {
               console.error("Error en axios: Búsqueda del usuario", error.response?.data || error.message);
             }
-  
-            window.location.href = "/home";
+
           } else {
             alert("Credenciales inválidas");
           }

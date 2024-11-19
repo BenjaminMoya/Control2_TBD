@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import Tdb.Control2Application.dto.LoginDto;
 
 @RestController
 @CrossOrigin("*")
@@ -69,7 +70,7 @@ public class UserController  {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestParam("email") String email,
+    public LoginDto login(@RequestParam("email") String email,
                          @RequestParam("password") String password){
         try {
             UsernamePasswordAuthenticationToken login = new UsernamePasswordAuthenticationToken(email, password);
@@ -77,9 +78,12 @@ public class UserController  {
 
             String jwt = this.jwtUtil.create(email);
 
-            return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, jwt).build();
+            LoginDto loginDto = new LoginDto();
+            loginDto.setToken(jwt);
+            //return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, jwt).build();
+            return loginDto;
         } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return new LoginDto();
         }
     }
 }
