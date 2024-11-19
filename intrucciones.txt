@@ -5,3 +5,4 @@
 -abre el fronend aveces es necesario ejecutar previamente npm, install vite --save-dev 
 -ejecutar el comando npm run dev 
 -empezar a utilizar 
+-en caso de que al iniciar no funcione el el login agregar a la url /home 
