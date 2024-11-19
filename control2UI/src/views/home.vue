@@ -240,8 +240,8 @@ export default {
   data() {
     return {
       userLogged: sessionStorage.getItem("userLogged")
-        ? JSON.parse(sessionStorage.getItem("userLogged"))
-        : null,
+          ? JSON.parse(sessionStorage.getItem("userLogged"))
+          : null,
       tasks: [],
       searchQuery: "",
       filter: "All",
@@ -263,69 +263,65 @@ export default {
     async fetchTasks() {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/task/get/user/${this.userLogged.userid}`,{
+            `http://localhost:8080/api/task/get/user/${this.userLogged.userid}`,
+            {
               headers: {
-                Authorization: `Bearer ${sessionStorage.getItem("token")}`
-              }
-            },
-            { params: { desc: this.searchQuery } },
-
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+              },
+              params: { desc: this.searchQuery || "" }, // Descripción opcional
+            }
         );
         this.tasks = response.data;
-        this.checkTasksWithUpcomingDeadline(); // Verificar fechas próximas al cargar
+        this.checkTasksWithUpcomingDeadline();
       } catch (error) {
-        console.error(error);
+        console.error("Error al cargar las tareas:", error);
         alert("Error al cargar las tareas.");
       }
     },
     async searchTasksByTitle() {
-  if (!this.searchQuery.trim()) {
-    this.fetchTasks(); // Si no hay búsqueda, recargar todas las tareas
-    return;
-  }
+      if (!this.searchQuery.trim()) {
+        await this.fetchTasks();
+        return;
+      }
 
-  try {
-    const responseByTitle = await axios.get(
-      `http://localhost:8080/api/task/get/title/${this.userLogged.userid}`,
-      { params: { title: this.searchQuery } },
-        {
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("token")}`
-          }
-        }
-    );
+      try {
+        const responseByTitle = await axios.get(
+            `http://localhost:8080/api/task/get/title/${this.userLogged.userid}`,
+            {
+              headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+              },
+              params: { title: this.searchQuery },
+            }
+        );
+        this.tasks = responseByTitle.data;
+      } catch (error) {
+        console.error("Error en la búsqueda por título:", error);
+        alert("No se pudo realizar la búsqueda por título.");
+      }
+    },
+    async searchTasksByDescription() {
+      if (!this.searchQuery.trim()) {
+        await this.fetchTasks();
+        return;
+      }
 
-    this.tasks = responseByTitle.data;
-  } catch (error) {
-    console.error("Error en la búsqueda por título:", error.message);
-    alert("No se pudo realizar la búsqueda por título.");
-  }
-}
-,
-async searchTasksByDescription() {
-  if (!this.searchQuery.trim()) {
-    this.fetchTasks(); // Si no hay búsqueda, recargar todas las tareas
-    return;
-  }
-
-  try {
-    const responseByDesc = await axios.get(
-      `http://localhost:8080/api/task/get/desc/${this.userLogged.userid}`,
-      { params: { desc: this.searchQuery } }, {
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("token")}`
-          }
-        }
-
-    );
-
-    this.tasks = responseByDesc.data;
-  } catch (error) {
-    console.error("Error en la búsqueda por descripción:", error.message);
-    alert("No se pudo realizar la búsqueda por descripción.");
-  }
-}
-,
+      try {
+        const responseByDesc = await axios.get(
+            `http://localhost:8080/api/task/get/desc/${this.userLogged.userid}`,
+            {
+              headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+              },
+              params: { desc: this.searchQuery },
+            }
+        );
+        this.tasks = responseByDesc.data;
+      } catch (error) {
+        console.error("Error en la búsqueda por descripción:", error);
+        alert("No se pudo realizar la búsqueda por descripción.");
+      }
+    },
     filterTasks(status) {
       this.filter = status;
     },
@@ -333,44 +329,47 @@ async searchTasksByDescription() {
       if (!confirm("¿Estás seguro de que deseas eliminar esta tarea?")) return;
 
       try {
-        await axios.post(`http://localhost:8080/api/task/delete/${taskId}`,
+        await axios.post(
+            `http://localhost:8080/api/task/delete/${taskId}`,
+            null,
             {
               headers: {
-                Authorization: `Bearer ${sessionStorage.getItem("token")}`
-              }
-            });
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+              },
+            }
+        );
         this.tasks = this.tasks.filter((task) => task.taskid !== taskId);
         alert("Tarea eliminada con éxito.");
       } catch (error) {
-        console.error(error);
+        console.error("Error al eliminar la tarea:", error);
         alert("Error al eliminar la tarea.");
       }
     },
     toggleIsLogged() {
       this.userLogged = null;
       sessionStorage.removeItem("userLogged");
+      sessionStorage.removeItem("token");
     },
     async markAsCompleted(taskId) {
       try {
+        if (!this.userLogged || !sessionStorage.getItem("token")) {
+          alert("Debe iniciar sesión para completar una tarea.");
+          return;
+        }
 
-
-          if (!user || !sessionStorage.getItem("token")) {
-              alert('Debe iniciar sesión para crear una tarea');
-              return;
-          }
-
-        await axios.post((`http://localhost:8080/api/task/complete/${taskId}`),
-              {
+        await axios.post(
+            `http://localhost:8080/api/task/complete/${taskId}`,
+            null,
+            {
               headers: {
-                Authorization: `Bearer ${sessionStorage.getItem("token")}`
-              }
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+              },
             }
-
-            );
+        );
         alert("Tarea marcada como completada.");
-        this.fetchTasks();
+        await this.fetchTasks();
       } catch (error) {
-        console.error(error);
+        console.error("Error al completar la tarea:", error);
         alert("No se pudo completar la tarea.");
       }
     },
@@ -381,71 +380,63 @@ async searchTasksByDescription() {
 
       this.upcomingTasks = this.tasks.filter((task) => {
         return (
-          !task.iscompleted &&
-          new Date(task.taskenddate) <= oneWeekFromNow &&
-          new Date(task.taskenddate) >= today
+            !task.iscompleted &&
+            new Date(task.taskenddate) <= oneWeekFromNow &&
+            new Date(task.taskenddate) >= today
         );
       });
 
       if (this.upcomingTasks.length > 0) {
         const modal = new bootstrap.Modal(
-          document.getElementById("upcomingDeadlineModal")
+            document.getElementById("upcomingDeadlineModal")
         );
         modal.show();
       }
     },
-    openEditModal(task) {
-
-
-        if (!user || !sessionStorage.getItem("token")) {
-          alert('Debe iniciar sesión para crear una tarea');
-          return;
-        }
+    async openEditModal(task) {
+      if (!this.userLogged || !sessionStorage.getItem("token")) {
+        alert("Debe iniciar sesión para editar una tarea.");
+        return;
+      }
 
       const newTitle = prompt("Editar título:", task.tasktitle);
       const newDesc = prompt("Editar descripción:", task.taskdesc);
       const newDate = prompt("Editar fecha límite (YYYY-MM-DD):", task.taskenddate);
 
-      axios
-        .post(`http://localhost:8080/api/task/update/title/${task.taskid}`,null, {
-          params: { title: newTitle },},
-            {
-              headers: {
-                Authorization: `Bearer ${sessionStorage.getItem("token")}`
-              }
-            })
-        .then(() =>
-          axios.post(
+      if (!newTitle || !newDesc || !newDate) {
+        alert("Todos los campos son obligatorios.");
+        return;
+      }
+
+      const headers = {
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+      };
+
+      try {
+        await axios.post(
+            `http://localhost:8080/api/task/update/title/${task.taskid}`,
+            null,
+            { headers, params: { title: newTitle } }
+        );
+
+        await axios.post(
             `http://localhost:8080/api/task/update/desc/${task.taskid}`,
             null,
-            { params: { desc: newDesc } },
-              {
-                headers: {
-                  Authorization: `Bearer ${sessionStorage.getItem("token")}`
-                }
-              }
-          )
-        )
-        .then(() =>
-          axios.post(
+            { headers, params: { desc: newDesc } }
+        );
+
+        await axios.post(
             `http://localhost:8080/api/task/update/end/${task.taskid}`,
             null,
-            { params: { date: newDate } },
-              {
-                headers: {
-                  Authorization: `Bearer ${sessionStorage.getItem("token")}`
-                }
-              }
-          )
-        )
-        .then(() => {
-          alert("Tarea actualizada con éxito.");
-          this.fetchTasks();
-        })
-        .catch((error) => {
-          console.error(error);
-          alert("Error al actualizar la tarea.");
-        });
+            { headers, params: { date: newDate } }
+        );
+
+        alert("Tarea actualizada con éxito.");
+        await this.fetchTasks();
+      } catch (error) {
+        console.error("Error al actualizar la tarea:", error);
+        alert("Error al actualizar la tarea. Verifica los datos.");
+      }
     },
   },
   mounted() {
@@ -454,9 +445,6 @@ async searchTasksByDescription() {
 };
 </script>
 
-
-
-  
   <style scoped>
   .container {
     padding: 20px;
